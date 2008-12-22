@@ -1,1 +1,6 @@
+<<<<<<< HEAD:.gitignore
 autonzb
+=======
+pkg
+manifest
+>>>>>>> 79ed654afc11654edfb897e780bbe35fa6d416d8:.gitignore
