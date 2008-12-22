@@ -13,9 +13,9 @@ class NZB
   def initialize(inspector, download_path, options = {})
     @options = options
     @options[:age] ||= 160
-    @options[:page] ||= 0
+    @options[:page] ||= 1
     
-    @nzb_url = "#{URL}/?group=143&minage=&age=160&min=4000&max=max&q=&m=search&adv=1&offset=#{@options[:page].to_i * 60}"
+    @nzb_url = "#{URL}/?group=143&minage=&age=160&min=4000&max=max&q=&m=search&adv=1&offset=#{(@options[:page].to_i - 1) * 60}"
     @movies = []
     
     parse_newzleech

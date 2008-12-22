@@ -29,7 +29,7 @@ module AutoNZB extend OptiFlagSet
     value_matches ["age must be a number", /[0-9]+/]
   end
   optional_flag "page" do
-    description "number of the page on newzleech, default: 0. Think to augment -a when change page number"
+    description "number of the page on newzleech, default: 1. Think to augment -a when change page number"
     value_matches ["page must be a number", /[0-9]+/]
   end
 
