@@ -14,12 +14,11 @@ In your terminal:
     autonzb -d /path/of/download/nzb/directory
     
 'll download new x264 HD movies nzb from newzleech.com, with imdb score >= 7.0, year >= 1950 and nzb age <= 160 days
-With more settings:
 
     autonzb -d /path/of/download/nzb/directory -movies /path/with/already/downloaded/movies -age 1 -imdb 7.5 -year 1980 -srt fr,en
     
-'ll download only new nzb of the day with imdb score >= 7.5, year >= 1980 and subtitles french or english
-the -movies setting prevent already owned movies to be re-downloaded (only if the owned movie is 'better' than the new release)
+'ll download only new nzb of the day with imdb score >= 7.5, year >= 1980 and subtitles french or english.
+The -movies setting prevent already owned movies to be re-downloaded (only if the owned movie is 'better' than the new release)
 
 more details with:
 
