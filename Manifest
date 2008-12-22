@@ -1,0 +1,9 @@
+bin/autonzb
+lib/imdb.rb
+lib/inspector.rb
+lib/movie.rb
+lib/nfo.rb
+lib/nzb.rb
+Manifest
+Rakefile
+README

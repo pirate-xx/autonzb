@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+
+require 'optiflag'
+require File.join(File.dirname(__FILE__), '..', 'lib', 'inspector')
+require File.join(File.dirname(__FILE__), '..', 'lib', 'nzb')
+
+module AutoNZB extend OptiFlagSet
+  flag "d" do
+    description "Download directory path for new nzb"
+  end
+  optional_flag "movies" do
+    description "Directories paths (separate by ,) with all your Movie's folders"
+  end
+  optional_flag 'srt' do
+    description "Subtitle's language wanted (separate by ,), ie 'fr,en,none'.
+                  Add 'none' at the end if you want download movie without subtitle. 
+                  (Order is important to define if a nzb is needed), default: none"
+    value_in_set ['fr', 'en', 'none']
+  end  
+  optional_flag 'imdb' do
+    description "IMDB score limit, default: 7.0"
+  end
+  optional_flag 'year' do
+    description "Movie year limit, default: 1950"
+    value_matches ["year must be a year, like 1997", /[0-9]{4}/]
+  end
+  optional_flag 'age' do
+    description "Age limit, in day, of nbz file on newzleech, default: 160"
+    value_matches ["age must be a number", /[0-9]+/]
+  end
+  optional_flag "page" do
+    description "number of the page on newzleech, default: 0. Think to augment -a when change page number"
+    value_matches ["page must be a number", /[0-9]+/]
+  end
+
+  and_process!
+end
+
+inspector = Inspector.new(ARGV.flags.movies || '', :year => ARGV.flags.year,
+                                                   :imdb_score => ARGV.flags.imdb,
+                                                   :srt => ARGV.flags.srt)
+
+nzbmatrix = NZB.new(inspector, ARGV.flags.d, :age => ARGV.flags.age, :page => ARGV.flags.page)
