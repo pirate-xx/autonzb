@@ -6,13 +6,13 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pirate"]
-  s.date = %q{2008-12-22}
+  s.date = %q{2008-12-24}
   s.default_executable = %q{autonzb}
   s.description = %q{Ruby tool to automatically download x264 HD nzb movies files from newzleech.com}
   s.email = %q{pirate.2061@gmail.com}
   s.executables = ["autonzb"]
-  s.extra_rdoc_files = ["bin/autonzb", "lib/imdb.rb", "lib/inspector.rb", "lib/movie.rb", "lib/nfo.rb", "lib/nzb.rb", "README"]
-  s.files = ["bin/autonzb", "lib/imdb.rb", "lib/inspector.rb", "lib/movie.rb", "lib/nfo.rb", "lib/nzb.rb", "Manifest", "Rakefile", "README", "autonzb.gemspec"]
+  s.extra_rdoc_files = ["bin/autonzb", "lib/imdb.rb", "lib/inspector.rb", "lib/movie.rb", "lib/nfo.rb", "lib/nzb.rb", "README.markdown"]
+  s.files = ["autonzb.gemspec", "bin/autonzb", "lib/imdb.rb", "lib/inspector.rb", "lib/movie.rb", "lib/nfo.rb", "lib/nzb.rb", "Manifest", "Rakefile", "README.markdown"]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/pirate/autonzb}
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Autonzb", "--main", "README.markdown"]
