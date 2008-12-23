@@ -9,11 +9,11 @@ module AutoNZB extend OptiFlagSet
     description "Download directory path for new nzb"
   end
   optional_flag "movies" do
-    description "Directories paths (separate by ,) with all your Movie's folders"
+    description "Directories paths (separated by ,) with all your Movie's folders"
   end
   optional_flag 'srt' do
-    description "Subtitle's language wanted (separate by ,), ie 'fr,en,none'.
-                  Add 'none' at the end if you want download movie without subtitle. 
+    description "Subtitle's language wanted (separated by ,), ie 'fr,en'.
+                  Use 'none' if you want download movies without subtitle too. 
                   (Order is important to define if a nzb is needed), default: none"
     value_in_set ['fr', 'en', 'none']
   end  
