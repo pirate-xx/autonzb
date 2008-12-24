@@ -3,7 +3,7 @@ require File.join(File.dirname(__FILE__), 'movie')
 class Inspector
     
   def initialize(paths, options = {})
-    @paths = paths.split(',').map { |p| p.gsub(/\/$/,'') }
+    @paths = paths.split(',').map { |p| p.gsub!(/\/$/,'') }
     @options = options
     @options[:srt] = @options[:srt] ? @options[:srt].split(',') : ['none']
     @options[:imdb_score] = @options[:imdb_score] ? @options[:imdb_score].to_f : 7.0
@@ -12,12 +12,12 @@ class Inspector
     @movies = []
     initialize_movies
     
-    $stdout.print "Movie criterions: imdb_score >= #{@options[:imdb_score]}, year >= #{@options[:year]} and srt [#{@options[:srt].join(',')}]\n"
+    $stdout.print "Movie criteria: imdb_score >= #{@options[:imdb_score]}, year >= #{@options[:year]} and srt [#{@options[:srt].join(',')}]\n"
   end
   
   def need?(movie)
     if valid?(movie)
-      $stdout.print " => movie has required criterions "
+      $stdout.print " => movie has required criteria "
       if m = @movies.detect { |m| m == movie }
         $stdout.print "but is already owned "
         if srt_score(movie) > srt_score(m)
@@ -48,7 +48,7 @@ class Inspector
         true
       end
     else
-      $stdout.print " => movie doesn't has required criterions\n"
+      $stdout.print " => movie doesn't have required criteria\n"
       false
     end
   end

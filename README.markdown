@@ -13,12 +13,12 @@ In your terminal:
 
     autonzb -d /path/of/download/nzb/directory
     
-'ll download new x264 HD movies nzb from newzleech.com, with imdb score >= 7.0, year >= 1950 and nzb age <= 160 days
+Will download new x264 HD movies nzb from newzleech.com, with imdb score >= 7.0, year >= 1950 and nzb age <= 160 days
 
     autonzb -d /path/of/download/nzb/directory -movies /path/with/already/downloaded/movies -age 1 -imdb 7.5 -year 1980 -srt fr,en
     
-'ll download only new nzb of the day with imdb score >= 7.5, year >= 1980 and subtitles french or english.
-The -movies setting prevent already owned movies to be re-downloaded (only if the owned movie is 'better' than the new release)
+Will download only new nzb of the day with imdb score >= 7.5, year >= 1980 and subtitles french or english.
+The -movies setting prevents already owned movies to be re-downloaded (only if the owned movie is 'better' than the new release)
 
 more details with:
 
@@ -26,11 +26,11 @@ more details with:
     
 ## Folder Name Convention
 
-AutoNZB use (and need) specific folders name for your movies:
+AutoNZB use (and needs) specific folders name for your movies:
 
     name of the movie (year) tag(s) format source sound encoding lang [srt(s)]
     
-    Burn After Reading (2008) PROPER 1080p BluRay DTS x264 [en]
+    Burn After Reading (2008) PROPER 1080p BluRay DTS x264 [fr,en]
     Le Fabuleux Destin d'Amelie Poulain (2001) 720p BluRay x264 FRENCH [en]
     ...
     

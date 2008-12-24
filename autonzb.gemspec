@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{autonzb}
-  s.version = "0.2.1"
+  s.version = "0.2.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pirate"]
@@ -26,20 +26,23 @@ Gem::Specification.new do |s|
     s.specification_version = 2
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<hpricot>, [">= 0"])
-      s.add_development_dependency(%q<optiflag>, [">= 0"])
-      s.add_development_dependency(%q<rubyzip>, [">= 0"])
-      s.add_development_dependency(%q<htmlentities>, [">= 0"])
+      s.add_runtime_dependency(%q<hpricot>, [">= 0"])
+      s.add_runtime_dependency(%q<optiflag>, [">= 0"])
+      s.add_runtime_dependency(%q<rubyzip>, [">= 0"])
+      s.add_runtime_dependency(%q<htmlentities>, [">= 0"])
+      s.add_development_dependency(%q<echoe>, [">= 0"])
     else
       s.add_dependency(%q<hpricot>, [">= 0"])
       s.add_dependency(%q<optiflag>, [">= 0"])
       s.add_dependency(%q<rubyzip>, [">= 0"])
       s.add_dependency(%q<htmlentities>, [">= 0"])
+      s.add_dependency(%q<echoe>, [">= 0"])
     end
   else
     s.add_dependency(%q<hpricot>, [">= 0"])
     s.add_dependency(%q<optiflag>, [">= 0"])
     s.add_dependency(%q<rubyzip>, [">= 0"])
     s.add_dependency(%q<htmlentities>, [">= 0"])
+    s.add_dependency(%q<echoe>, [">= 0"])
   end
 end
