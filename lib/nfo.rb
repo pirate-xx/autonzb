@@ -5,7 +5,7 @@ class NFO
   attr_accessor :srt, :imdb_link
   
   def initialize(url)
-    @nfo = open(url).read
+    @nfo = open(url.gsub(/\/$/,'')).read
     @srt = []
     
     parse_nfo
