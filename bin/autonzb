@@ -28,7 +28,7 @@ module AutoNZB extend OptiFlagSet
     value_matches ["age must be a number", /[0-9]+/]
   end
   optional_flag "pages" do
-    description "number page(s) parsed on newzleech, default: 2. Think to augment -a when change number of pages"
+    description "number page(s) parsed on newzleech, default: 2. Think to augment -age when change number of pages"
     value_matches ["pages must be a number", /[0-9]+/]
   end
   optional_flag "backup" do
