@@ -34,7 +34,7 @@ private
   
   def set_doc
     if link
-      @doc = Hpricot(open(link.gsub(/\/$/,'')))
+      @doc = Hpricot(open(link.gsub(/\/\s*$/,'')))
     else
       query = "#{@name} (#{@year})"
       search_url = "http://www.imdb.com/find?q=#{CGI::escape(query)}"
