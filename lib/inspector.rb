@@ -5,7 +5,7 @@ class Inspector
   attr_accessor :backup
   
   def initialize(paths, options = {})
-    @paths = paths.split(',').map { |p| p.gsub!(/\/$/,'') }
+    @paths = paths.split(',').map { |p| p.gsub(/\/$/,'') }
     @options = options
     @options[:srt] = @options[:srt] ? @options[:srt].split(',') : ['none']
     @options[:imdb_score] = @options[:imdb_score] ? @options[:imdb_score].to_f : 7.0
