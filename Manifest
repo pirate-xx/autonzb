@@ -1,4 +1,4 @@
-autonzb.gemspec
+asset/failure.png
 bin/autonzb
 lib/imdb.rb
 lib/inspector.rb

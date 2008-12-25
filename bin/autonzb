@@ -38,9 +38,13 @@ module AutoNZB extend OptiFlagSet
   and_process!
 end
 
-inspector = Inspector.new(ARGV.flags.movies || '', :year => ARGV.flags.year,
-                                                   :imdb_score => ARGV.flags.imdb,
-                                                   :srt => ARGV.flags.srt,
-                                                   :backup => ARGV.flags.backup)
+begin
+  inspector = Inspector.new(ARGV.flags.movies || '', :year => ARGV.flags.year,
+                                                     :imdb_score => ARGV.flags.imdb,
+                                                     :srt => ARGV.flags.srt,
+                                                     :backup => ARGV.flags.backup)
 
-nzbmatrix = NZB.new(inspector, ARGV.flags.d, :age => ARGV.flags.age, :pages => ARGV.flags.pages)
+  nzbmatrix = NZB.new(inspector, ARGV.flags.d, :age => ARGV.flags.age, :pages => ARGV.flags.pages)
+rescue => e
+  Inspector.growl("AutoNZB Error!", e)
+end
