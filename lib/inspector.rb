@@ -18,7 +18,7 @@ class Inspector
       @backup_path = @options[:backup].gsub(/\/$/,'') 
       @nzbs = []
       initialize_nzbs
-      @movies += @nzbs
+      @movies = @nzbs + @movies
     end
     
     $stdout.print "Movie criteria: imdb score >= #{@options[:imdb_score]}, year >= #{@options[:year]} and srt [#{@options[:srt].join(',')}]\n"
