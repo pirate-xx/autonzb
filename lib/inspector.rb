@@ -71,7 +71,7 @@ class Inspector
   end
   
   def self.growl(title, msg, pri = 0)
-    system("/usr/local/bin/growlnotify -w -n autosub --image #{File.dirname(__FILE__) + "/../asset/failure.png"} -p #{pri} -m #{msg.inspect} #{title} &") 
+    system("/usr/local/bin/growlnotify -w -n autonzb --image #{File.dirname(__FILE__) + "/../asset/failure.png"} -p #{pri} -m #{msg.inspect} #{title} &") 
   end
   
 private
