@@ -94,7 +94,10 @@ private
         size += 1
       end
     end
-    $stdout.print "Deleted #{size} useless backuped nzb(s) (keep only the best nzb by movie)\n" if size > 0
+    if size > 0
+      $stdout.print "#########################################################################\n"
+      $stdout.print "Deleted #{size} useless backuped nzb(s) (keep only the best nzb by movie)\n"
+    end
   end
     
 end
