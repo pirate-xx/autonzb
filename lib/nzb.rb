@@ -11,6 +11,7 @@ class NZB
   attr_accessor :movies, :agent
   
   def initialize(inspector, download_path, options = {})
+    @inspector, @download_path = inspector, download_path.gsub(/\/$/,'')
     @options = options
     @options[:age] ||= 160
     @options[:pages] ||= 2
@@ -23,24 +24,8 @@ class NZB
     end
     
     parse_newzleech
-    movies.each do |movie|
-      $stdout.print "#{movie.dirname}, imdb score: #{movie.score}, age: #{movie.age.to_i} day(s)\n"
-      if inspector.need?(movie)
-        $stdout.print  " => DOWNLOAD: #{movie.name} (#{movie.year})\n"
-        download_nzb(download_path, movie, inspector.backup)
-      end
-    end
-    $stdout.print "No nzb found, maybe change -age or -page setting\n" if @movies.empty?
-  end
-  
-  def download_nzb(download_path, movie, backup_path = nil)
-    path = download_path.gsub(/\/$/,'') # removed / at the end
-    Tempfile.open("movie.nzb") do |tempfile|
-      tempfile.write(open(movie.nzb_link).read) # download the nzb
-      tempfile.close
-      File.move(tempfile.path, "#{path}/#{movie.dirname}.nzb")
-      File.copy("#{path}/#{movie.dirname}.nzb", "#{backup_path}/#{movie.dirname}.nzb") if backup_path
-    end
+    parse_movies
+    keep_only_best_nzb if @inspector.backup_path
   end
   
 private
@@ -70,6 +55,27 @@ private
     $stdout.print "\n"
   end
   
+  def parse_movies
+    movies.each do |movie|
+      $stdout.print "#{movie.dirname}, imdb score: #{movie.score}, age: #{movie.age.to_i} day(s)\n"
+      if @inspector.need?(movie)
+        $stdout.print " => DOWNLOAD: #{movie.name} (#{movie.year})\n"
+        download_nzb(movie, @inspector.backup_path)
+        @inspector.movies << movie
+      end
+    end
+    $stdout.print "No nzb found, maybe change -age or -page setting\n" if @movies.empty?
+  end
+  
+  def download_nzb(movie, backup_path = nil)
+    Tempfile.open("movie.nzb") do |tempfile|
+      tempfile.write(open(movie.nzb_link).read) # download the nzb
+      tempfile.close
+      File.move(tempfile.path, "#{@download_path}/#{movie.dirname}.nzb")
+      File.copy("#{@download_path}/#{movie.dirname}.nzb", "#{backup_path}/#{movie.dirname}.nzb") if backup_path
+    end
+  end
+  
   def parse_age(string)
     case string
     when /h/i
@@ -77,6 +83,18 @@ private
     when /d/i
       string.to_f
     end
+  end
+  
+  def keep_only_best_nzb
+    size = 0
+    @inspector.nzbs.each do |nzb|
+      nzbs = @inspector.nzbs.select { |item| item.path != nzb.path }
+      unless @inspector.need?(nzb, true, nzbs, false)
+        File.delete(nzb.path)
+        size += 1
+      end
+    end
+    $stdout.print "Deleted #{size} useless backuped nzb(s) (keep only the best nzb by movie)\n" if size > 0
   end
     
 end

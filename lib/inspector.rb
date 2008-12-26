@@ -2,7 +2,7 @@ require File.join(File.dirname(__FILE__), 'movie')
 
 class Inspector
   
-  attr_accessor :backup
+  attr_accessor :backup_path, :movies, :nzbs
   
   def initialize(paths, options = {})
     @paths = paths.split(',').map { |p| p.gsub(/\/$/,'') }
@@ -11,59 +11,61 @@ class Inspector
     @options[:imdb_score] = @options[:imdb_score] ? @options[:imdb_score].to_f : 7.0
     @options[:year] = @options[:year] ? @options[:year].to_i : 1950
     
-    if @options[:backup]
-      @backup = @options[:backup].gsub(/\/$/,'')
-      @paths << @backup
-    end
-    
     @movies = []
     initialize_movies
+    
+    if @options[:backup]
+      @backup_path = @options[:backup].gsub(/\/$/,'') 
+      @nzbs = []
+      initialize_nzbs
+      @movies += @nzbs
+    end
     
     $stdout.print "Movie criteria: imdb score >= #{@options[:imdb_score]}, year >= #{@options[:year]} and srt [#{@options[:srt].join(',')}]\n"
   end
   
-  def need?(movie)
-    if valid?(movie)
-      $stdout.print " => movie has required criteria "
-      if m = @movies.detect { |m| m == movie }
-        $stdout.print "but is already owned "
+  def need?(movie, not_validate = false, movies = @movies, log = true)
+    if not_validate || valid?(movie)
+      $stdout.print " => movie has required criteria " if log
+      if m = movies.detect { |m| m == movie }
+        $stdout.print "but is already owned " if log
         if srt_score(movie) > srt_score(m)
-          $stdout.print "but new movie has better subtitle: [#{movie.srt.join(',')}]\n"
+          $stdout.print "but new movie has better subtitle: [#{movie.srt.join(',')}]\n" if log
           true
         elsif srt_score(movie) == srt_score(m)
           if format_score(movie) > format_score(m)
-            $stdout.print "but new movie has better format: #{movie.format}\n"
+            $stdout.print "but new movie has better format: #{movie.format}\n" if log
             true
           elsif format_score(movie) == format_score(m)
             if source_score(movie) > source_score(m)
-              $stdout.print "but new movie has better source: #{movie.source}\n"
+              $stdout.print "but new movie has better source: #{movie.source}\n" if log
               true
             elsif source_score(movie) == source_score(m)
               if sound_score(movie) > sound_score(m)
-                $stdout.print "but new movie has better sound: #{movie.sound}\n"
+                $stdout.print "but new movie has better sound: #{movie.sound}\n" if log
                 true
               else
-                $stdout.print "with same srt, format, source and sound\n"
+                $stdout.print "with same srt, format, source and sound\n" if log
                 false
               end
             else
-              $stdout.print "with same srt, format and better source: #{m.source}\n"
+              $stdout.print "with same srt, format and better source: #{m.source}\n" if log
               false
             end
           else
-            $stdout.print "with same srt and better format: #{m.format}\n"
+            $stdout.print "with same srt and better format: #{m.format}\n" if log
             false
           end
         else
-          $stdout.print "with better subtitle: [#{m.srt.join(',')}]\n"
+          $stdout.print "with better subtitle: [#{m.srt.join(',')}]\n" if log
           false
         end
       else
-        $stdout.print "and is not already owned\n"
+        $stdout.print "and is not already owned\n" if log
         true
       end
     else
-      $stdout.print " => movie doesn't have required criteria\n"
+      $stdout.print " => movie doesn't have required criteria\n" if log
       false
     end
   end
@@ -80,14 +82,19 @@ private
       base_dir = clean_dir(Dir.new(path))
       base_dir.each do |movie|
         movie_path = "#{path}/#{movie}"
-        @movies << Movie.new(movie) if File.directory?(movie_path) || File.extname(movie_path) == '.nzb'
+        @movies << Movie.new(movie, :path => movie_path) if File.directory?(movie_path)
       end
-      if path == @backup
-        $stdout.print "Found #{@movies.size - old_movies_size} backuped nzb(s) in #{path}\n"
-      else
-        $stdout.print "Found #{@movies.size - old_movies_size} movie(s) in #{path}\n"
-      end
+      $stdout.print "Found #{@movies.size - old_movies_size} movie(s) in #{path}\n"
     end
+  end
+  
+  def initialize_nzbs
+    base_dir = clean_dir(Dir.new(@backup_path))
+    base_dir.each do |nzb|
+      nzb_path = "#{@backup_path}/#{nzb}"
+      @nzbs << Movie.new(nzb, :path => nzb_path) if File.extname(nzb_path) == '.nzb'
+    end
+    $stdout.print "Found #{@nzbs.size} backuped nzb(s) in #{@backup_path}\n"
   end
 
   def clean_dir(dir)

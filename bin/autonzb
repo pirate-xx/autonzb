@@ -46,5 +46,6 @@ begin
 
   nzbmatrix = NZB.new(inspector, ARGV.flags.d, :age => ARGV.flags.age, :pages => ARGV.flags.pages)
 rescue => e
-  Inspector.growl("AutoNZB Error!", e)
+  p e.to_s
+  Inspector.growl("AutoNZB Error!", 'look into the console log')
 end
