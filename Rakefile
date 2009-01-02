@@ -3,7 +3,7 @@ require 'rubygems'
 require 'rake'
 require 'echoe'
 
-Echoe.new('autonzb', '0.3.4') do |p|
+Echoe.new('autonzb', '0.3.5') do |p|
   p.description    = "Ruby tool to automatically download x264 HD nzb movies files from newzleech.com"
   p.url            = "http://github.com/pirate/autonzb"
   p.author         = "Pirate"

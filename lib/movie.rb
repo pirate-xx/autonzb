@@ -51,7 +51,6 @@ private
   end
   
   def set_name
-    @name = imdb.name if imdb_link
     if @name.nil?
       raw_name = @raw_name.gsub(/\(|\)|\[|\]|\{|\}|\//, ' ')
       if matched = raw_name.match(/(.*)(19[0-9]{2}|20[0-9]{2})[^p]/)
@@ -66,11 +65,11 @@ private
       @name.gsub!(/REPACK|LIMITED|UNRATED|PROPER|REPOST|Directors\sCut/iu,'')
       @name.gsub!(/^\s+|\s+$/u,'')
     end
-    @name = imdb.name unless imdb_link
+    @name = imdb.name unless path
   end
   
   def set_year
-    @year = imdb.year
+    @year = imdb.year unless path
     if (year.nil? || year == 0) && matched = @raw_name.match(/19[0-9]{2}|20[0-9]{2}/)
       @year = matched[0].to_i
     end
