@@ -22,8 +22,6 @@ class Movie
     set_encoding
     set_tags
     set_year
-    
-    p dirname
   end
     
   def score
