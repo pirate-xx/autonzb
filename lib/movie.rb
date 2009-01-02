@@ -54,9 +54,11 @@ private
     @name = imdb.name if imdb_link
     if @name.nil?
       raw_name = @raw_name.gsub(/\(|\)|\[|\]|\{|\}|\//, ' ')
-      if matched = raw_name.match(/(.*)[0-9]{4}[^p]/)
+      if matched = raw_name.match(/(.*)(19[0-9]{2}|20[0-9]{2})[^p]/)
         @name = matched[1]
-      elsif matched = raw_name.match(/(.*)[0-9]{3,4}p/)
+      elsif matched = raw_name.match(/(.*)1080p/i)
+        @name = matched[1]
+      elsif matched = raw_name.match(/(.*)720p/i)
         @name = matched[1]
       else
         @name = ''
@@ -64,10 +66,11 @@ private
       @name.gsub!(/REPACK|LIMITED|UNRATED|PROPER|REPOST|Directors\sCut/iu,'')
       @name.gsub!(/^\s+|\s+$/u,'')
     end
+    @name = imdb.name unless imdb_link
   end
   
   def set_year
-    @year = imdb.year if imdb_link
+    @year = imdb.year
     if (year.nil? || year == 0) && matched = @raw_name.match(/19[0-9]{2}|20[0-9]{2}/)
       @year = matched[0].to_i
     end
@@ -143,7 +146,7 @@ private
     @tags << 'PROPER'        if @raw_name =~ /PROPER/i
     @tags << 'REPOST'        if @raw_name =~ /REPOST/i
     @tags << 'OUTDATED'      if @raw_name =~ /OUTDATED/i
-    @tags << 'Directors Cut' if @raw_name =~ /Directors\sCut/i
+    @tags << 'Directors Cut' if @raw_name =~ /Directors\sCut|DirCut/i
   end
   
 end
