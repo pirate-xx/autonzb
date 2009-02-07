@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{autonzb}
-  s.version = "0.3.5"
+  s.version = "0.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pirate"]
-  s.date = %q{2009-01-02}
+  s.date = %q{2009-02-07}
   s.default_executable = %q{autonzb}
   s.description = %q{Ruby tool to automatically download x264 HD nzb movies files from newzleech.com}
   s.email = %q{pirate.2061@gmail.com}
@@ -30,19 +30,16 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<optiflag>, [">= 0"])
       s.add_runtime_dependency(%q<rubyzip>, [">= 0"])
       s.add_runtime_dependency(%q<htmlentities>, [">= 0"])
-      s.add_development_dependency(%q<echoe>, [">= 0"])
     else
       s.add_dependency(%q<hpricot>, [">= 0"])
       s.add_dependency(%q<optiflag>, [">= 0"])
       s.add_dependency(%q<rubyzip>, [">= 0"])
       s.add_dependency(%q<htmlentities>, [">= 0"])
-      s.add_dependency(%q<echoe>, [">= 0"])
     end
   else
     s.add_dependency(%q<hpricot>, [">= 0"])
     s.add_dependency(%q<optiflag>, [">= 0"])
     s.add_dependency(%q<rubyzip>, [">= 0"])
     s.add_dependency(%q<htmlentities>, [">= 0"])
-    s.add_dependency(%q<echoe>, [">= 0"])
   end
 end
