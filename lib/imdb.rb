@@ -5,12 +5,13 @@ require 'htmlentities'
 
 class IMDB
   
-  attr_accessor :link
+  attr_accessor :link, :doc, :id
   
   def initialize(name, year = nil, link = nil)
     @name, @year, @link = name, year, link
     @coder = HTMLEntities.new
     set_doc
+    set_id
   end
 
   def score
@@ -29,32 +30,36 @@ class IMDB
     $KCODE = 'utf-8'
     @doc ? @coder.decode(@doc.search("title").inner_html.match(/(.*)\s\(/u)[1]) : @name
   end
-  
+    
 private
   
   def set_doc
-    if link
-      @doc = Hpricot(open(link.gsub(/\/\s*$/,'')))
+    if @link
+      @doc = Hpricot(open(@link.gsub(/\/\s*$/,'')))
     else
       query = "#{@name} (#{@year})"
       search_url = "http://www.imdb.com/find?q=#{CGI::escape(query)}"
       doc = Hpricot(open(search_url))
       case doc.search("title").inner_html
-      when "IMDb Title Search" # search result page
+      when "IMDb Title Search", "IMDb Search" # search result page
         if !doc.search("b[text()*='Media from'] a").empty?        
           imdb_id = doc.search("b[text()*='Media from'] a").first[:href]
           movie_url = "http://www.imdb.com#{imdb_id}"
         elsif !doc.search("td[@valign='top'] a[@href^='/title/tt']").empty?
           imdb_id = doc.search("td[@valign='top'] a[@href^='/title/tt']").first[:href]
           movie_url = "http://www.imdb.com#{imdb_id}"
+        else
+          movie_url = nil
         end
-        @doc = Hpricot(open(movie_url))
-      when "IMDb Search"
-        @doc = nil
+        @doc = Hpricot(open(movie_url)) if movie_url
       else # direct in movie page
         @doc = doc
       end
     end
+  end
+  
+  def set_id
+    @id = doc.search("a[@href*='/title/tt']").first[:href].match(/tt[0-9]+/)[0] if doc
   end
     
 end

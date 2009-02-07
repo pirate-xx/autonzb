@@ -5,15 +5,15 @@ class Movie
   include Comparable
   
   attr_accessor :path, :name, :format, :source, :sound, :encoding, :year, :srt, :lang, :score, :tags, :age,
-                :imdb_link, :nfo_link, :nzb_link
+                :imdb_link, :imdb_id, :nzb_link, :nfo
   
   def initialize(raw_name, attributes = {})
     @raw_name = raw_name.gsub(/\.|\_/,' ')
-    attributes.each { |k,v| send("#{k}=", v) }
+    attributes.each { |k,v| self.send("#{k}=", v) }
     @srt, @tags = [], []
     
-    set_imdb_link
     set_name
+    set_year
     set_format
     set_source
     set_sound
@@ -21,7 +21,8 @@ class Movie
     set_lang
     set_encoding
     set_tags
-    set_year
+    set_imdb_id
+    set_data_from_imdb unless path    
   end
     
   def score
@@ -29,11 +30,15 @@ class Movie
   end
 
   def dirname
-    "#{name} (#{year}) #{tags.join(' ')} #{format} #{source} #{sound} #{encoding} #{lang} [#{srt.join(',')}]".gsub(/\s+/,' ')
+    "#{name} (#{year}) #{tags.join(' ')} #{format} #{source} #{sound} #{encoding} #{lang} {#{imdb_id}} [#{srt.join(',')}]".gsub(/\s+/,' ')
   end
 
   def <=>(other_movie)
-    "#{name} #{year}".downcase <=> "#{other_movie.name} #{other_movie.year}".downcase
+    if imdb_id && other_movie.imdb_id
+      imdb_id <=> other_movie.imdb_id
+    else
+      "#{name} #{year}".downcase <=> "#{other_movie.name} #{other_movie.year}".downcase
+    end
   end
       
 private
@@ -41,13 +46,21 @@ private
   def imdb
     @imdb ||= IMDB.new(name, year, imdb_link)
   end
-  
-  def nfo
-    @nfo ||= NFO.new(nfo_link)
+    
+  def imdb_link
+    @imdb_link || (imdb_id && "http://imdb.com/title/#{imdb_id}")
   end
   
-  def set_imdb_link
-    @imdb_link = nfo.imdb_link if imdb_link.nil? && nfo_link
+  def set_imdb_id
+    if imdb_link
+      @imdb_id = imdb_link.match(/tt[0-9]+/)[0]
+    elsif matched = @raw_name.match(/\{(.*)\}/)
+      @imdb_id = matched[1]
+    elsif path
+      add_imdb_id_to_file
+    else
+      nil
+    end
   end
   
   def set_name
@@ -65,12 +78,10 @@ private
       @name.gsub!(/REPACK|LIMITED|UNRATED|PROPER|REPOST|Directors\sCut/iu,'')
       @name.gsub!(/^\s+|\s+$/u,'')
     end
-    @name = imdb.name unless path
   end
   
   def set_year
-    @year = imdb.year unless path
-    if (year.nil? || year == 0) && matched = @raw_name.match(/19[0-9]{2}|20[0-9]{2}/)
+    if matched = @raw_name.match(/19[0-9]{2}|20[0-9]{2}/)
       @year = matched[0].to_i
     end
   end
@@ -122,7 +133,7 @@ private
   end
   
   def set_srt
-    if nfo_link
+    if nfo
       @srt = nfo.srt
     elsif matched = @raw_name.match(/\[(.*)\]/)
       matched[1].split(',').each { |srt| @srt << srt }
@@ -131,10 +142,14 @@ private
   
   def set_lang
     @lang = case @raw_name
-    when /FRENCH/
+    when /FRENCH/i
       'FRENCH'
-    when /GERMAN/
+    when /GERMAN/i
       'GERMAN'
+    when /DANISH/i
+      'DANISH'
+    when /NORDIC/i
+      'NORDIC'
     end
   end
   
@@ -146,6 +161,30 @@ private
     @tags << 'REPOST'        if @raw_name =~ /REPOST/i
     @tags << 'OUTDATED'      if @raw_name =~ /OUTDATED/i
     @tags << 'Directors Cut' if @raw_name =~ /Directors\sCut|DirCut/i
+  end
+  
+  def set_data_from_imdb
+    @name = imdb.name
+    imdb_year = imdb.year
+    if !imdb_year.nil? && imdb_year != 0
+      @year = imdb_year
+    end
+  end
+  
+  def add_imdb_id_to_file_if_not_present
+    @imdb_id = imdb.id
+    dir_name = File.dirname(path)
+    ext_name = File.extname(path)
+    base_name = File.basename(path, ext_name)
+    if matched = base_name.match(/^(.*)\s(\[{1}.*\]{1})$/)
+      base_name_without_srts = matched[1]
+      srts = matched[2]
+      new_base_name = "#{base_name_without_srts} {#{imdb_id}} #{srts}#{ext_name}"
+    else
+      new_base_name = "#{base_name} {#{imdb_id}}#{ext_name}"
+    end
+    File.rename(path, "#{dir_name}/#{new_base_name}")
+    $stdout.print "Added {#{imdb_id}} (imdb id) => #{dir_name}/#{new_base_name}\n"
   end
   
 end
