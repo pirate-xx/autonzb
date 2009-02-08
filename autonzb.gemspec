@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.email = %q{pirate.2061@gmail.com}
   s.executables = ["autonzb"]
   s.extra_rdoc_files = ["bin/autonzb", "lib/imdb.rb", "lib/inspector.rb", "lib/movie.rb", "lib/nfo.rb", "lib/nzb.rb", "README.markdown"]
-  s.files = ["asset/failure.png", "bin/autonzb", "lib/imdb.rb", "lib/inspector.rb", "lib/movie.rb", "lib/nfo.rb", "lib/nzb.rb", "Manifest", "Rakefile", "README.markdown", "autonzb.gemspec"]
+  s.files = ["asset/failure.png", "autonzb.gemspec", "bin/autonzb", "lib/imdb.rb", "lib/inspector.rb", "lib/movie.rb", "lib/nfo.rb", "lib/nzb.rb", "Manifest", "Rakefile", "README.markdown"]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/pirate/autonzb}
   s.rdoc_options = ["--line-numbers", "--inline-source", "--title", "Autonzb", "--main", "README.markdown"]
