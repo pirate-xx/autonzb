@@ -54,10 +54,11 @@ private
   def set_imdb_id
     if imdb_link
       @imdb_id = imdb_link.match(/tt[0-9]+/)[0]
-    elsif matched = @raw_name.match(/\{(.*)\}/)
+    elsif matched = @raw_name.match(/\{(tt[0-9]+)\}/)
       @imdb_id = matched[1]
-    elsif path
-      add_imdb_id_to_file
+    elsif imdb
+      @imdb_id = imdb.id
+      add_imdb_id_to_file if path
     else
       nil
     end
@@ -137,6 +138,8 @@ private
       @srt = nfo.srt
     elsif matched = @raw_name.match(/\[(.*)\]/)
       matched[1].split(',').each { |srt| @srt << srt }
+    else
+      @srt << 'no nfo'
     end
   end
   
@@ -172,7 +175,6 @@ private
   end
   
   def add_imdb_id_to_file_if_not_present
-    @imdb_id = imdb.id
     dir_name = File.dirname(path)
     ext_name = File.extname(path)
     base_name = File.basename(path, ext_name)

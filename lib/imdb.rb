@@ -12,6 +12,7 @@ class IMDB
     @coder = HTMLEntities.new
     set_doc
     set_id
+    p @id
   end
 
   def score
@@ -36,6 +37,7 @@ private
   def set_doc
     if @link
       @doc = Hpricot(open(@link.gsub(/\/\s*$/,'')))
+      @id = @link.match(/tt[0-9]+/)[0]
     else
       query = "#{@name} (#{@year})"
       search_url = "http://www.imdb.com/find?q=#{CGI::escape(query)}"
@@ -51,7 +53,10 @@ private
         else
           movie_url = nil
         end
-        @doc = Hpricot(open(movie_url)) if movie_url
+        if movie_url
+          @doc = Hpricot(open(movie_url))
+          @id = movie_url.match(/tt[0-9]+/)[0]
+        end
       else # direct in movie page
         @doc = doc
       end
@@ -59,7 +64,7 @@ private
   end
   
   def set_id
-    @id = doc.search("a[@href*='/title/tt']").first[:href].match(/tt[0-9]+/)[0] if doc
+    @id ||= doc.search("a[@href*='/title/tt']").first[:href].match(/tt[0-9]+/)[0] if doc
   end
     
 end
