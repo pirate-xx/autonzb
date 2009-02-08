@@ -12,7 +12,6 @@ class IMDB
     @coder = HTMLEntities.new
     set_doc
     set_id
-    p @id
   end
 
   def score

@@ -49,9 +49,8 @@ private
             movie = Movie.new(raw_name, :nfo => nfo, :imdb_link => imdb_link, :nzb_link => nzb_link(table), :age => age)
             @movies << movie
             
-            $stdout.print "#{movie.dirname}, imdb score: #{movie.score}, age: #{movie.age.to_i} day(s)\n"
-            # $stdout.print '.'
-            # $stdout.flush
+            $stdout.print '.'
+            $stdout.flush
           end
         end
       end

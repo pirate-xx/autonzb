@@ -174,7 +174,7 @@ private
     end
   end
   
-  def add_imdb_id_to_file_if_not_present
+  def add_imdb_id_to_file
     dir_name = File.dirname(path)
     ext_name = File.extname(path)
     base_name = File.basename(path, ext_name)
