@@ -20,10 +20,12 @@ private
       when /subtitle|sub/i
         @srt << 'fr' if line =~ /fr|fre|french/i
         @srt << 'en' if line =~ /en|eng|english/i
+        @srt << 'none' if line =~ /none/i
       when /imdb\.com\/title\//
         @imdb_link = (matched = line.match(/imdb.com\/title\/(tt[0-9]+)/)) && "http://imdb.com/title/#{matched[1]}"
       end
     end
+    @srt << 'nfo but ?' if @srt.empty?
   end
   
 end
