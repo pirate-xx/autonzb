@@ -9,3 +9,4 @@ lib/nzb.rb
 Manifest
 Rakefile
 README.markdown
+tasks/test.rake
