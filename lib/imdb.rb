@@ -8,6 +8,7 @@ class IMDB
   attr_accessor :link, :doc, :id
   
   def initialize(name, year = nil, link = nil)
+    @try = 3
     @name, @year, @link = name, year, link
     @coder = HTMLEntities.new
     set_doc
@@ -59,6 +60,14 @@ private
       else # direct in movie page
         @doc = doc
       end
+    end
+  rescue
+    if @try > 0
+      @try -= 1
+      $stdout.print '*'
+      set_doc
+    else
+      @doc = nil
     end
   end
   

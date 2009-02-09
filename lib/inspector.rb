@@ -7,9 +7,7 @@ class Inspector
   def initialize(paths, options = {})
     @paths = paths.split(',').map { |p| p.gsub(/\/$/,'') }
     @options = options
-    p @options[:srt]
     @options[:srt] = @options[:srt] ? (@options[:srt].split(',') - ["unknown"] + ['unknown']).uniq : nil
-    p @options[:srt]
     @options[:imdb_score] = @options[:imdb_score] ? @options[:imdb_score].to_f : 7.0
     @options[:year] = @options[:year] ? @options[:year].to_i : 1950
     
