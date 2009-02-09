@@ -7,7 +7,9 @@ class Inspector
   def initialize(paths, options = {})
     @paths = paths.split(',').map { |p| p.gsub(/\/$/,'') }
     @options = options
-    @options[:srt] = @options[:srt] ? @options[:srt].split(',') : ['none']
+    p @options[:srt]
+    @options[:srt] = @options[:srt] ? (@options[:srt].split(',') - ["unknown"] + ['unknown']).uniq : nil
+    p @options[:srt]
     @options[:imdb_score] = @options[:imdb_score] ? @options[:imdb_score].to_f : 7.0
     @options[:year] = @options[:year] ? @options[:year].to_i : 1950
     
@@ -102,9 +104,9 @@ private
   end
   
   def valid?(movie)
-    srt_size = @options[:srt].size
-    (((@options[:srt] - movie.srt).size < srt_size) || @options[:srt].include?('none')) &&
-    movie.year >= @options[:year] && movie.score >= @options[:imdb_score]
+    (@options[:srt].nil? || (((@options[:srt] - movie.srt).size < @options[:srt].size)) || movie.lang == 'FRENCH') &&
+    movie.year >= @options[:year] &&
+    movie.score >= @options[:imdb_score]
   end
   
   def srt_score(movie)

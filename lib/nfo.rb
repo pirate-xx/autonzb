@@ -25,7 +25,7 @@ private
         @imdb_link = (matched = line.match(/imdb.com\/title\/(tt[0-9]+)/)) && "http://imdb.com/title/#{matched[1]}"
       end
     end
-    @srt << 'nfo but ?' if @srt.empty?
+    @srt << 'unknown' if @srt.empty?
   end
   
 end

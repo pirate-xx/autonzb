@@ -137,9 +137,14 @@ private
     if nfo
       @srt = nfo.srt
     elsif matched = @raw_name.match(/\[(.*)\]/)
-      matched[1].split(',').each { |srt| @srt << srt }
+      srts = matched[1].split(',')
+      if srts.empty?
+        @srt << 'none'
+      else
+        srts.each { |srt| @srt << srt }
+      end
     else
-      @srt << 'no nfo'
+      @srt << 'unknown'
     end
   end
   

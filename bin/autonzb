@@ -13,8 +13,9 @@ module AutoNZB extend OptiFlagSet
   end
   optional_flag 'srt' do
     description "Subtitle languages desired (separated by ,), ie 'fr,en'.
-                  Add 'none' at the end if you want to download movies without subtitles too. 
-                  (Order is important to define if a nzb is needed), default: none"
+                  Add 'none' at the end if you want to download movies without subtitles too.
+                  'unknown' is always added at the end, and nzb with unknown srt are always downloaded.
+                  (Order is important to define if a nzb is needed) default: nil"
   end  
   optional_flag 'imdb' do
     description "IMDB score limit, default: 7.0"

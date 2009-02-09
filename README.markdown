@@ -17,7 +17,7 @@ Will download new x264 HD movies nzb from newzleech.com, with imdb score >= 7.0,
 
     autonzb -d /path/of/download/nzb/directory -movies /path/with/already/downloaded/movies -age 1 -imdb 7.5 -year 1980 -srt fr,en
     
-Will download only new nzb of the day with imdb score >= 7.5, year >= 1980 and subtitles french or english.
+Will download only new nzb of the day with imdb score >= 7.5, year >= 1980 and subtitles french or english (and unknown srt).
 The -movies setting prevents already owned movies to be re-downloaded (only if the owned movie is 'better' than the new release)
 
 more details with:
@@ -28,13 +28,13 @@ more details with:
 
 AutoNZB use (and needs) specific folders name for your movies:
 
-    name of the movie (year) tag(s) format source sound encoding lang [srt(s)]
+    name of the movie (year) tag(s) format source sound encoding lang {imdb_id} [srt(s)]
     
-    Burn After Reading (2008) PROPER 1080p BluRay DTS x264 [fr,en]
-    Le Fabuleux Destin d'Amelie Poulain (2001) 720p BluRay x264 FRENCH [en]
+    Burn After Reading (2008) PROPER 1080p BluRay DTS x264 {tt0887883} [fr,en]
+    Le Fabuleux Destin d'Amelie Poulain (2001) 720p BluRay x264 FRENCH {tt0211915} [en]
     ...
     
-## License
+## MIT License
 
 Copyright (c) 2008 Pirate
  
