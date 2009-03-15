@@ -28,7 +28,7 @@ class Movie
   def score
     @score ||= imdb.score
   end
-
+  
   def dirname
     "#{name} (#{year}) #{tags.join(' ')} #{format} #{source} #{sound} #{encoding} #{lang} {#{imdb_id}} [#{srt.join(',')}]".gsub(/\s+/,' ')
   end
@@ -181,8 +181,13 @@ private
   
   def add_imdb_id_to_file
     dir_name = File.dirname(path)
-    ext_name = File.extname(path)
-    base_name = File.basename(path, ext_name)
+    if File.directory?(path)
+      base_name = File.basename(path)
+      ext_name = ''
+    else
+      ext_name = path.include?('.nzb') ? '.nzb' : File.extname(path)
+      base_name = File.basename(path, ext_name)
+    end
     if matched = base_name.match(/^(.*)\s(\[{1}.*\]{1})$/)
       base_name_without_srts = matched[1]
       srts = matched[2]

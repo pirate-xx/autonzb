@@ -45,7 +45,7 @@ begin
                                                      :srt => ARGV.flags.srt,
                                                      :backup => ARGV.flags.backup)
 
-  nzbmatrix = NZB.new(inspector, ARGV.flags.d, :age => ARGV.flags.age, :pages => ARGV.flags.pages)
+  newzleech = NZB.new(inspector, ARGV.flags.d, :age => ARGV.flags.age, :pages => ARGV.flags.pages)
 rescue => e
   p e.to_s
   Inspector.growl("AutoNZB Error!", 'look into the console log')

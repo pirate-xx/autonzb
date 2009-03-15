@@ -65,7 +65,8 @@ private
     if @try > 0
       @try -= 1
       $stdout.print '*'
-      set_doc
+      sleep 2
+      set_doc #retry
     else
       @doc = nil
     end

@@ -15,10 +15,15 @@ In your terminal:
     
 Will download new x264 HD movies nzb from newzleech.com, with imdb score >= 7.0, year >= 1950 and nzb age <= 160 days
 
+    autonzb -d /path/of/download/nzb/directory -backup /path/of/backuped/already/downloaded/nzb
+    
+-backup option it's very useful to prevent useless re-download of nzb already downloaded
+
     autonzb -d /path/of/download/nzb/directory -movies /path/with/already/downloaded/movies -age 1 -imdb 7.5 -year 1980 -srt fr,en
     
 Will download only new nzb of the day with imdb score >= 7.5, year >= 1980 and subtitles french or english (and unknown srt).
-The -movies setting prevents already owned movies to be re-downloaded (only if the owned movie is 'better' than the new release)
+The -movies setting prevents already owned movies to be re-downloaded (only if the owned movie is 'better' than the new release),
+movies folder need to follow the name convention (especially {imdb_id})
 
 more details with:
 
@@ -26,7 +31,7 @@ more details with:
     
 ## Folder Name Convention
 
-AutoNZB use (and needs) specific folders name for your movies:
+AutoNZB use (and needs if you want to use -movies options) specific folders name for your movies:
 
     name of the movie (year) tag(s) format source sound encoding lang {imdb_id} [srt(s)]
     

@@ -100,8 +100,8 @@ private
     Tempfile.open("movie.nzb") do |tempfile|
       tempfile.write(open(movie.nzb_link).read) # download the nzb
       tempfile.close
+      File.copy(tempfile.path, "#{backup_path}/#{movie.dirname}.nzb") if backup_path
       File.move(tempfile.path, "#{@download_path}/#{movie.dirname}.nzb")
-      File.copy("#{@download_path}/#{movie.dirname}.nzb", "#{backup_path}/#{movie.dirname}.nzb") if backup_path
     end
   end
   
