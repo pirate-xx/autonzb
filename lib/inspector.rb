@@ -21,7 +21,7 @@ class Inspector
       @movies = @nzbs + @movies
     end
     
-    $stdout.print "Movie criteria: imdb score >= #{@options[:imdb_score]}, year >= #{@options[:year]} and srt [#{@options[:srt].join(',')}]\n"
+    $stdout.print "Movie criteria: imdb score >= #{@options[:imdb_score]}, year >= #{@options[:year]}#{" and srt [#{@options[:srt].join(',')}]" if @options[:srt]}\n"
   end
   
   def need?(movie, not_validate = false, movies = @movies, log = true)

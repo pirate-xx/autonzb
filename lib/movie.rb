@@ -1,5 +1,4 @@
 require File.join(File.dirname(__FILE__), 'imdb')
-require File.join(File.dirname(__FILE__), 'nfo')
 
 class Movie
   include Comparable
