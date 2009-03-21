@@ -2,13 +2,13 @@
 
 Gem::Specification.new do |s|
   s.name = %q{autonzb}
-  s.version = "0.4.5"
+  s.version = "0.5.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pirate"]
-  s.date = %q{2009-03-15}
+  s.date = %q{2009-03-22}
   s.default_executable = %q{autonzb}
-  s.description = %q{Ruby tool to automatically download x264 HD nzb movies files from newzleech.com}
+  s.description = %q{Ruby tool to automatically download x264 HD nzb movies files from newzleech.com & nzbs.org}
   s.email = %q{pirate.2061@gmail.com}
   s.executables = ["autonzb"]
   s.extra_rdoc_files = ["bin/autonzb", "lib/imdb.rb", "lib/inspector.rb", "lib/movie.rb", "lib/nfo.rb", "lib/nzb.rb", "README.markdown"]
@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{autonzb}
   s.rubygems_version = %q{1.3.1}
-  s.summary = %q{Ruby tool to automatically download x264 HD nzb movies files from newzleech.com}
+  s.summary = %q{Ruby tool to automatically download x264 HD nzb movies files from newzleech.com & nzbs.org}
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION

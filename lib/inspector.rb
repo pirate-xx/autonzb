@@ -1,11 +1,13 @@
 require File.join(File.dirname(__FILE__), 'movie')
+require File.join(File.dirname(__FILE__), 'sites', 'newzleech', 'nzb')
+require File.join(File.dirname(__FILE__), 'sites', 'nzbs', 'nzb')
 
 class Inspector
   
   attr_accessor :backup_path, :movies, :nzbs
   
-  def initialize(paths, options = {})
-    @paths = paths.split(',').map { |p| p.gsub(/\/$/,'') }
+  def initialize(download_path, options = {})
+    @paths = options[:movie_paths] ? options[:movie_paths].split(',').map { |p| p.gsub(/\/$/,'') } : []
     @options = options
     @options[:srt] = @options[:srt] ? (@options[:srt].split(',') - ["unknown"] + ['unknown']).uniq : nil
     @options[:imdb_score] = @options[:imdb_score] ? @options[:imdb_score].to_f : 7.0
@@ -14,14 +16,22 @@ class Inspector
     @movies = []
     initialize_movies
     
-    if @options[:backup]
-      @backup_path = @options[:backup].gsub(/\/$/,'') 
+    if @options[:backup_path]
+      @backup_path = @options[:backup_path].gsub(/\/$/,'') 
       @nzbs = []
       initialize_nzbs
       @movies = @nzbs + @movies
     end
     
     $stdout.print "Movie criteria: imdb score >= #{@options[:imdb_score]}, year >= #{@options[:year]}#{" and srt [#{@options[:srt].join(',')}]" if @options[:srt]}\n"
+    
+    if @options[:login] && @options[:pass]
+      Nzbs::NZB.new(self, download_path, @options)
+    else
+      Newzleech::NZB.new(self, download_path, @options)
+    end
+    
+    keep_only_best_nzb if @backup_path
   end
   
   def need?(movie, not_validate = false, movies = @movies, log = true)
@@ -95,6 +105,8 @@ private
       @nzbs << Movie.new(nzb, :path => nzb_path) if File.extname(nzb_path) == '.nzb'
     end
     $stdout.print "Found #{@nzbs.size} backuped nzb(s) in #{@backup_path}\n"
+  rescue => e
+    $stdout.print "Problem with backup nzb: #{e}\n"
   end
 
   def clean_dir(dir)
@@ -108,11 +120,15 @@ private
   end
   
   def srt_score(movie)
-    srts = @options[:srt].reverse
-    movie.srt.inject(-1) do |score, srt|
-      s = (i = srts.index(srt)) ? i : -1
-      score = s if s > score
-      score
+    if @options[:srt]
+      srts = @options[:srt].reverse
+      movie.srt.inject(-1) do |score, srt|
+        s = (i = srts.index(srt)) ? i : -1
+        score = s if s > score
+        score
+      end
+    else
+      0
     end
   end
   
@@ -136,6 +152,21 @@ private
   
   def sound_score(movie)
     movie.format == 'DTS' ? 1 : 0    
+  end
+  
+  def keep_only_best_nzb
+    size = 0
+    @nzbs.each do |nzb|
+      nzbs = @nzbs.select { |item| item.path != nzb.path }
+      unless need?(nzb, true, nzbs, false)
+        File.delete(nzb.path)
+        size += 1
+      end
+    end
+    if size > 0
+      $stdout.print "#########################################################################\n"
+      $stdout.print "Deleted #{size} useless backuped nzb(s) (keep only the best nzb by movie)\n"
+    end
   end
 
 end

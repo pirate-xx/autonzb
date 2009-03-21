@@ -11,6 +11,11 @@ class Movie
     attributes.each { |k,v| self.send("#{k}=", v) }
     @srt, @tags = [], []
     
+    # for info set with nzbs title
+    if name && year && score
+      @info_get_from_title = true
+    end
+    
     set_name
     set_year
     set_format
@@ -20,8 +25,9 @@ class Movie
     set_lang
     set_encoding
     set_tags
+    
     set_imdb_id
-    set_data_from_imdb unless path    
+    set_data_from_imdb unless path || @info_get_from_title
   end
     
   def score
@@ -64,7 +70,7 @@ private
   end
   
   def set_name
-    if @name.nil?
+    if name.nil?
       raw_name = @raw_name.gsub(/\(|\)|\[|\]|\{|\}|\//, ' ')
       if matched = raw_name.match(/(.*)(19[0-9]{2}|20[0-9]{2})[^p]/)
         @name = matched[1]
@@ -81,8 +87,10 @@ private
   end
   
   def set_year
-    if matched = @raw_name.match(/19[0-9]{2}|20[0-9]{2}/)
-      @year = matched[0].to_i
+    if year.nil?
+      if matched = @raw_name.match(/19[0-9]{2}|20[0-9]{2}/)
+        @year = matched[0].to_i
+      end
     end
   end
   

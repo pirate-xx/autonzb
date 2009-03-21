@@ -26,7 +26,6 @@ module Newzleech
     
       parse_newzleech
       parse_movies
-      keep_only_best_nzb if @inspector.backup_path
     end
   
   private
@@ -112,21 +111,6 @@ module Newzleech
         string.to_f / 24
       when /d/i
         string.to_f
-      end
-    end
-  
-    def keep_only_best_nzb
-      size = 0
-      @inspector.nzbs.each do |nzb|
-        nzbs = @inspector.nzbs.select { |item| item.path != nzb.path }
-        unless @inspector.need?(nzb, true, nzbs, false)
-          File.delete(nzb.path)
-          size += 1
-        end
-      end
-      if size > 0
-        $stdout.print "#########################################################################\n"
-        $stdout.print "Deleted #{size} useless backuped nzb(s) (keep only the best nzb by movie)\n"
       end
     end
     

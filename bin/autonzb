@@ -2,7 +2,6 @@
 
 require 'optiflag'
 require File.join(File.dirname(__FILE__), '..', 'lib', 'inspector')
-require File.join(File.dirname(__FILE__), '..', 'lib', 'sites', 'newzleech', 'nzb')
 
 module AutoNZB extend OptiFlagSet
   flag "d" do
@@ -35,17 +34,26 @@ module AutoNZB extend OptiFlagSet
   optional_flag "backup" do
     description "Backup folder path (to save a copy of all downloaded nzb files and prevent an already downloaded nzb to be re-downloaded)"
   end
+  optional_flag "login" do
+    description "Username for www.nzbs.org"
+  end
+  optional_flag "pass" do
+    description "Password for www.nzbs.org"
+  end
 
   and_process!
 end
 
 begin
-  inspector = Inspector.new(ARGV.flags.movies || '', :year => ARGV.flags.year,
-                                                     :imdb_score => ARGV.flags.imdb,
-                                                     :srt => ARGV.flags.srt,
-                                                     :backup => ARGV.flags.backup)
-
-  newzleech = Newzleech::NZB.new(inspector, ARGV.flags.d, :age => ARGV.flags.age, :pages => ARGV.flags.pages)
+  inspector = Inspector.new(ARGV.flags.d, :year => ARGV.flags.year,
+                                          :imdb_score => ARGV.flags.imdb,
+                                          :srt => ARGV.flags.srt,
+                                          :age => ARGV.flags.age,
+                                          :pages => ARGV.flags.pages,
+                                          :backup_path => ARGV.flags.backup,
+                                          :movie_paths => ARGV.flags.movies,
+                                          :login => ARGV.flags.login,
+                                          :pass => ARGV.flags.pass)
 rescue => e
   p e.to_s
   Inspector.growl("AutoNZB Error!", 'look into the console log')
