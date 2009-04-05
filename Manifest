@@ -4,8 +4,11 @@ bin/autonzb
 lib/imdb.rb
 lib/inspector.rb
 lib/movie.rb
-lib/nfo.rb
-lib/nzb.rb
+lib/sites/newzleech/nfo.rb
+lib/sites/newzleech/nzb.rb
+lib/sites/nzbs/mechanize_hack.rb
+lib/sites/nzbs/nfo.rb
+lib/sites/nzbs/nzb.rb
 Manifest
 Rakefile
 README.markdown

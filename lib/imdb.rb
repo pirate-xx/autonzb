@@ -8,7 +8,7 @@ class IMDB
   attr_accessor :link, :doc, :id
   
   def initialize(name, year = nil, link = nil)
-    $stdout.print 'i'
+    # $stdout.print 'i'
     @try = 3
     @name, @year, @link = name, year, link
     @coder = HTMLEntities.new

@@ -25,11 +25,8 @@ class Inspector
     
     $stdout.print "Movie criteria: imdb score >= #{@options[:imdb_score]}, year >= #{@options[:year]}#{" and srt [#{@options[:srt].join(',')}]" if @options[:srt]}\n"
     
-    if @options[:login] && @options[:pass]
-      Nzbs::NZB.new(self, download_path, @options)
-    else
-      Newzleech::NZB.new(self, download_path, @options)
-    end
+    Nzbs::NZB.new(self, download_path, @options) if @options[:login] && @options[:pass]
+    Newzleech::NZB.new(self, download_path, @options)
     
     keep_only_best_nzb if @backup_path
   end

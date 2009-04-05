@@ -90,8 +90,8 @@ module Newzleech
         if @inspector.need?(movie)
           $stdout.print " => DOWNLOAD: #{movie.name} (#{movie.year})\n"
           download_nzb(movie, @inspector.backup_path)
-          @inspector.movies << movie
         end
+        @inspector.movies << movie
       end
       $stdout.print "No nzb found, maybe change -age or -page setting\n" if @movies.empty?
     end
