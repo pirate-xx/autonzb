@@ -54,6 +54,7 @@ begin
                                           :movie_paths => ARGV.flags.movies,
                                           :login => ARGV.flags.login,
                                           :pass => ARGV.flags.pass)
+  inspector.search_and_download
 rescue => e
   p e.to_s
   Inspector.growl("AutoNZB Error!", 'look into the console log')

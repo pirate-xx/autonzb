@@ -8,24 +8,26 @@ module Newzleech
   class NZB
   
     URL = 'http://www.newzleech.com'
-  
-    attr_accessor :movies, :agent
-  
-    def initialize(inspector, download_path, options = {})
-      @inspector, @download_path = inspector, download_path.gsub(/\/$/,'')
+    
+    attr_accessor :nzbs
+    
+    def initialize(options = {})
       @options = options
       @options[:age] ||= 160
       @options[:pages] ||= 2
     
       @nzb_urls = []
-      @movies = []
+      @nzbs = []
     
       (1..(@options[:pages].to_i)).each do |page|
         @nzb_urls << "#{URL}?group=143&minage=&age=160&min=4000&max=max&q=&m=search&adv=1&offset=#{(page.to_i - 1) * 60}"
       end
     
       parse_newzleech
-      parse_movies
+    end
+    
+    def download(movie)
+      open(movie.nzb_link).read
     end
   
   private
@@ -47,7 +49,7 @@ module Newzleech
             if age <= @options[:age].to_f
               raw_name = clean_raw_name(raw_name)
               movie = Movie.new(raw_name, :nfo => nfo, :imdb_link => imdb_link, :nzb_link => nzb_link(table), :age => age)
-              @movies << movie
+              @nzbs << movie
             
               $stdout.print '.'
               $stdout.flush
@@ -83,32 +85,11 @@ module Newzleech
     def nzb_link(table)
       (nzb = table.search("td.get a[@href^='?m=gen&dl=1']").first) && "#{URL}/#{nzb[:href]}"
     end
-  
-    def parse_movies
-      movies.each do |movie|
-        $stdout.print "#{movie.dirname}, imdb score: #{movie.score}, age: #{movie.age.to_i} day(s)\n"
-        if @inspector.need?(movie)
-          $stdout.print " => DOWNLOAD: #{movie.name} (#{movie.year})\n"
-          download_nzb(movie, @inspector.backup_path)
-        end
-        @inspector.movies << movie
-      end
-      $stdout.print "No nzb found, maybe change -age or -page setting\n" if @movies.empty?
-    end
-  
-    def download_nzb(movie, backup_path = nil)
-      Tempfile.open("movie.nzb") do |tempfile|
-        tempfile.write(open(movie.nzb_link).read) # download the nzb
-        tempfile.close
-        File.copy(tempfile.path, "#{backup_path}/#{movie.dirname}.nzb") if backup_path
-        File.move(tempfile.path, "#{@download_path}/#{movie.dirname}.nzb")
-      end
-    end
-  
+          
     def parse_age(string)
       case string
       when /h/i
-        string.to_f / 24
+        ((string.to_f / 24) * 10).to_i / 10.0
       when /d/i
         string.to_f
       end

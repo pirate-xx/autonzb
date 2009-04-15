@@ -12,16 +12,15 @@ module Nzbs
   
     URL = 'http://www.nzbs.org'
   
-    attr_accessor :movies, :agent
+    attr_accessor :nzbs, :agent
   
-    def initialize(inspector, download_path, options = {})
-      @inspector, @download_path = inspector, download_path.gsub(/\/$/,'')
+    def initialize(options = {})
       @options = options
       @options[:age] ||= 160
       @options[:pages] ||= 2
     
       @nzb_urls = []
-      @movies = []
+      @nzbs = []
     
       (1..(@options[:pages].to_i)).each do |page|
         @nzb_urls << "#{URL}/index.php?action=browse&catid=4&page=#{(page)}"
@@ -29,9 +28,12 @@ module Nzbs
       
       login
       parse_nzbs
-      parse_movies
     end
-  
+    
+    def download(movie)
+      @agent.get_file(movie.nzb_link)
+    end
+    
   private
   
     def login
@@ -64,7 +66,7 @@ module Nzbs
                                           :nzb_link => nzb_link(tr, page),
                                           :age => age,
                                           :nfo => @nfo)
-              @movies << movie
+              @nzbs << movie
             
               $stdout.print '.'
               $stdout.flush
@@ -110,27 +112,6 @@ module Nzbs
   
     def nzb_link(tr, page)
       (a = tr.search("a.dlnzb").first) && "#{URL}/#{a[:href]}"
-    end
-  
-    def parse_movies
-      movies.each do |movie|
-        $stdout.print "#{movie.dirname}, imdb score: #{movie.score}, age: #{movie.age} day(s)\n"
-        if @inspector.need?(movie)
-          $stdout.print " => DOWNLOAD: #{movie.name} (#{movie.year})\n"
-          download_nzb(movie, @inspector.backup_path)
-        end
-        @inspector.movies << movie
-      end
-      $stdout.print "No nzb found, maybe change -age or -page setting\n" if movies.empty?
-    end
-  
-    def download_nzb(movie, backup_path = nil)
-      Tempfile.open("movie.nzb") do |tempfile|
-        tempfile.write(@agent.get_file(movie.nzb_link)) # download the nzb
-        tempfile.close
-        File.copy(tempfile.path, "#{backup_path}/#{movie.dirname}.nzb") if backup_path
-        File.move(tempfile.path, "#{@download_path}/#{movie.dirname}.nzb")
-      end
     end
     
   end

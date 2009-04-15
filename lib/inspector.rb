@@ -4,9 +4,10 @@ require File.join(File.dirname(__FILE__), 'sites', 'nzbs', 'nzb')
 
 class Inspector
   
-  attr_accessor :backup_path, :movies, :nzbs
+  attr_accessor :download_path, :backup_path, :movies, :nzbs
   
   def initialize(download_path, options = {})
+    @download_path = download_path.gsub(/\/$/,'')
     @paths = options[:movie_paths] ? options[:movie_paths].split(',').map { |p| p.gsub(/\/$/,'') } : []
     @options = options
     @options[:srt] = @options[:srt] ? (@options[:srt].split(',') - ["unknown"] + ['unknown']).uniq : nil
@@ -24,17 +25,44 @@ class Inspector
     end
     
     $stdout.print "Movie criteria: imdb score >= #{@options[:imdb_score]}, year >= #{@options[:year]}#{" and srt [#{@options[:srt].join(',')}]" if @options[:srt]}\n"
-    
-    Nzbs::NZB.new(self, download_path, @options) if @options[:login] && @options[:pass]
-    Newzleech::NZB.new(self, download_path, @options)
-    
-    keep_only_best_nzb if @backup_path
   end
   
-  def need?(movie, not_validate = false, log = true)
+  def search_and_download
+    if @options[:login] && @options[:pass]
+      site = Nzbs::NZB.new(@options)
+      parse_nzbs(site)
+    end
+    site = Newzleech::NZB.new(@options)
+    parse_nzbs(site)
+    
+    keep_only_best_nzbs if backup_path
+  end
+
+  def parse_nzbs(site)
+    site.nzbs.each do |movie|
+      $stdout.print "#{movie.dirname}, imdb score: #{movie.score}, age: #{movie.age} day(s)\n"
+      if need?(movie)
+        $stdout.print " => DOWNLOAD: #{movie.name} (#{movie.year})\n"
+        download(site, movie)
+      end
+    end
+    $stdout.print "No nzb found, maybe change -age or -page setting\n" if site.nzbs.empty?
+  end
+
+  def download(site, movie)
+    Tempfile.open("movie.nzb") do |tempfile|
+      tempfile.write(site.download(movie)) # download nzb
+      tempfile.close
+      File.copy(tempfile.path, "#{backup_path}/#{movie.dirname}.nzb") if backup_path
+      File.move(tempfile.path, "#{download_path}/#{movie.dirname}.nzb")
+    end
+    @movies << movie
+  end
+  
+  def need?(movie, movies = @movies, not_validate = false, log = true)
     if not_validate || valid?(movie)
       $stdout.print " => movie has required criteria " if log
-      if m = @movies.detect { |m| m == movie }
+      if m = movies.detect { |m| m == movie }
         $stdout.print "but is already owned " if log
         if srt_score(movie) > srt_score(m)
           $stdout.print "but new movie has better subtitle: [#{movie.srt.join(',')}]\n" if log
@@ -151,11 +179,11 @@ private
     movie.format == 'DTS' ? 1 : 0    
   end
   
-  def keep_only_best_nzb
+  def keep_only_best_nzbs
     size = 0
     @nzbs.each do |nzb|
       nzbs = @nzbs.select { |item| item.path != nzb.path }
-      unless need?(nzb, true, nzbs, false)
+      unless need?(nzb, nzbs, true, false)
         File.delete(nzb.path)
         size += 1
       end
