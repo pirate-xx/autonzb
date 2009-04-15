@@ -31,10 +31,10 @@ class Inspector
     keep_only_best_nzb if @backup_path
   end
   
-  def need?(movie, not_validate = false, movies = @movies, log = true)
+  def need?(movie, not_validate = false, log = true)
     if not_validate || valid?(movie)
       $stdout.print " => movie has required criteria " if log
-      if m = movies.detect { |m| m == movie }
+      if m = @movies.detect { |m| m == movie }
         $stdout.print "but is already owned " if log
         if srt_score(movie) > srt_score(m)
           $stdout.print "but new movie has better subtitle: [#{movie.srt.join(',')}]\n" if log
