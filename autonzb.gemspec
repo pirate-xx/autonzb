@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{autonzb}
-  s.version = "0.5.1"
+  s.version = "0.5.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pirate"]
-  s.date = %q{2009-04-05}
+  s.date = %q{2009-04-15}
   s.default_executable = %q{autonzb}
   s.description = %q{Ruby tool to automatically download x264 HD nzb movies files from newzleech.com & nzbs.org}
   s.email = %q{pirate.2061@gmail.com}

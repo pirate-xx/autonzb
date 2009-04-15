@@ -35,7 +35,7 @@ class Movie
   end
   
   def dirname
-    "#{name} (#{year}) #{tags.join(' ')} #{format} #{source} #{sound} #{encoding} #{lang} {#{imdb_id}} [#{srt.join(',')}]".gsub(/\s+/,' ')
+    "#{name} (#{year}) #{tags.join(' ')} #{format} #{source} #{sound} #{encoding} #{lang} {#{imdb_id}} [#{srt.join(',')}]".gsub(/\s+|\//,' ')
   end
 
   def <=>(other_movie)
